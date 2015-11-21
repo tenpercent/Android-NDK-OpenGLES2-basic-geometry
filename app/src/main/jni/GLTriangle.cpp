@@ -5,6 +5,7 @@
 #include "GLTriangle.h"
 
 #include <cmath>
+#include <vector>
 
 static GLuint loadShader (GLenum shader_type, const char *const source);
 
@@ -25,14 +26,24 @@ void GLTriangle::draw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_programObject);
 
-    const GLfloat vertices[] = {
-             rad1 * cos(freq1 * time + phase1), rad1 * sin(freq1 * time + phase1), 0,
-             rad2 * cos(freq2 * time + phase2), rad2 * sin(freq2 * time + phase2), 0,
-             0,                                 0,                                 0
-    };
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, vertices);
+    const GLfloat rad = .5 + .25 * cos (time / 60.);
+
+    const std::vector<GLfloat> vertices = [rad]
+    {
+        std::vector<GLfloat> v;
+        const size_t total_vertices = 100;
+        const float basic_angle = 2. * M_PI / total_vertices;
+        for (size_t i = 0; i < total_vertices; ++i)
+        {
+            v.push_back(rad * (GLfloat) cos (basic_angle * i));
+            v.push_back(rad * (GLfloat) sin (basic_angle * i));
+            v.push_back(0);
+        }
+        return v;
+    } ();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glEnableVertexAttribArray(0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_LINE_LOOP, 0, vertices.size () / 3);
     ++time;
 }
 

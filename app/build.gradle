@@ -36,6 +36,7 @@ model {
         moduleName = "render_triangle"
         ldLibs.addAll (["android", "EGL", "GLESv2"])
         cppFlags.add ("-std=c++11".toString())
+        stl = "c++_shared"
     }
 }
 

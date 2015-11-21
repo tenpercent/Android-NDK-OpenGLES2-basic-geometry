@@ -71,6 +71,7 @@ class NativeWrapper
 
     static
     {
+        System.loadLibrary("c++_shared");
         System.loadLibrary("render_triangle");
     }
 }
